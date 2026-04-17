@@ -1,0 +1,307 @@
+openapi: 3.0.3
+info:
+  title: Rime AI API
+  description: |
+    Ultra-low-latency (<200ms) conversational text-to-speech API by Rime AI.
+    Features 300+ voices across multiple models (Arcana, Mist v2, Mist v3) with
+    streaming HTTP output, WebSocket streaming, and custom pronunciation control.
+  version: "1.0.0"
+  contact:
+    name: Rime AI
+    url: https://rime.ai
+    email: support@rime.ai
+  license:
+    name: Proprietary
+servers:
+  - url: https://users.rime.ai
+    description: Production server
+security:
+  - BearerAuth: []
+paths:
+  /v1/rime-tts:
+    post:
+      operationId: createTts
+      summary: Generate speech (Mist v3 / Mist v2 / Arcana)
+      description: |
+        Synthesize speech from text using Rime's TTS models (`arcana`, `mistv2`, or `mistv3`).
+        Audio bytes are returned in the format indicated by the `Accept` header.
+
+        Supported `Accept` values: `audio/webm;codecs=opus`, `audio/ogg;codecs=opus`,
+        `audio/mp3`, `audio/wav`, `audio/pcm`, `audio/x-mulaw`.
+      tags:
+        - TextToSpeech
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TtsRequest"
+      responses:
+        "200":
+          description: Synthesized audio bytes.
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+            audio/mp3:
+              schema:
+                type: string
+                format: binary
+            audio/wav:
+              schema:
+                type: string
+                format: binary
+            audio/pcm:
+              schema:
+                type: string
+                format: binary
+            audio/ogg:
+              schema:
+                type: string
+                format: binary
+            audio/webm:
+              schema:
+                type: string
+                format: binary
+            audio/x-mulaw:
+              schema:
+                type: string
+                format: binary
+        "400":
+          description: Invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Invalid or missing API key.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "429":
+          description: Rate limit exceeded.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /data/voices/all-v2.json:
+    get:
+      operationId: listVoices
+      summary: List all available voices
+      description: |
+        Returns a mapping of `modelId` → language code → list of voice names for every
+        voice supported by Rime. Language keys follow ISO 639-2 (e.g. `eng`, `spa`).
+      tags:
+        - Voices
+      security: []
+      responses:
+        "200":
+          description: Mapping of model → language → voice names.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListVoicesResponse"
+
+  /data/voices/voice_details.json:
+    get:
+      operationId: listVoiceDetails
+      summary: List voice details
+      description: |
+        Returns an array of voice metadata objects including speaker name, gender, age,
+        country, dialect, demographic, genre, language, and the model the voice is
+        available under.
+      tags:
+        - Voices
+      security: []
+      responses:
+        "200":
+          description: Array of voice detail objects.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VoiceDetail"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: "API key passed as `Authorization: Bearer <API_KEY>`."
+
+  schemas:
+    TtsRequest:
+      type: object
+      required:
+        - speaker
+        - text
+      properties:
+        speaker:
+          type: string
+          description: |
+            The voice used to synthesize the text. Must be one of the voices
+            returned by `/data/voices/all-v2.json` for the selected `modelId`.
+          example: cove
+        text:
+          type: string
+          description: |
+            The text to speak. Character limits depend on the model:
+            Mist v2/v3 allow 500 characters per request via the API, Arcana allows 3,000.
+          example: "Hello from Rime AI."
+        modelId:
+          type: string
+          description: |
+            The TTS model to use. `arcana` for flagship conversational voices,
+            `mistv3` for low-latency streaming, `mistv2` as a fallback.
+          enum:
+            - arcana
+            - mistv3
+            - mistv2
+          example: mistv3
+        lang:
+          type: string
+          description: |
+            Language identifier for the selected speaker. Must match the speaker's
+            language. Defaults to `eng`/`en` depending on model.
+          example: eng
+        samplingRate:
+          type: integer
+          description: |
+            Output sample rate in Hz. Allowed range is 4000-44100 for Mist v2;
+            Mist v3 and Arcana default to 24000 when omitted.
+          minimum: 4000
+          maximum: 44100
+          example: 24000
+        speedAlpha:
+          type: number
+          format: float
+          description: |
+            Adjusts the speed of speech for Mist v2. Values below 1.0 speed up, values
+            above 1.0 slow down.
+          example: 1.0
+        timeScaleFactor:
+          type: number
+          format: float
+          description: |
+            Adjusts the speed of speech for Mist v3 / Arcana. Values below 1 slow down
+            the audio; values above 1 speed it up.
+          example: 1.0
+        pauseBetweenBrackets:
+          type: boolean
+          description: |
+            Adds pauses between words enclosed in angle brackets, with the pause
+            duration specified in milliseconds (e.g. `Hello <500> world`).
+          default: false
+        phonemizeBetweenBrackets:
+          type: boolean
+          description: |
+            Enables custom pronunciation via phonemes specified inside curly brackets.
+          default: false
+        inlineSpeedAlpha:
+          type: string
+          description: |
+            Comma-separated per-word speed multipliers for words inside square brackets.
+            Values > 1.0 accelerate, values < 1.0 decelerate.
+          example: "1.2,0.8"
+        noTextNormalization:
+          type: boolean
+          description: |
+            Skip text normalization to reduce latency. Available only on Mist v2.
+          default: false
+        saveOovs:
+          type: boolean
+          description: |
+            Save out-of-vocabulary words for later review. Available only on Mist v2.
+          default: false
+
+    ListVoicesResponse:
+      type: object
+      description: |
+        Object keyed by `modelId` (e.g. `mistv3`, `mistv2`, `arcana`). Each value is
+        an object keyed by ISO 639-2 language code whose value is an array of voice
+        name strings.
+      additionalProperties:
+        type: object
+        additionalProperties:
+          type: array
+          items:
+            type: string
+      example:
+        mistv3:
+          eng:
+            - abbie
+            - allison
+        mistv2:
+          eng:
+            - abbie
+          spa:
+            - isa
+            - mari
+        arcana:
+          any:
+            - luna
+            - celeste
+
+    VoiceDetail:
+      type: object
+      properties:
+        speaker:
+          type: string
+          description: The name of the voice.
+          example: Cove
+        gender:
+          type: string
+          description: Voice gender designation.
+          example: Male
+        age:
+          type: string
+          description: Age group of the voice.
+          example: Middle
+        country:
+          type: string
+          description: Country associated with the voice, typically representing accent.
+          example: US
+        dialect:
+          type: string
+          description: Dialect - more specific than country.
+          example: Generic
+        demographic:
+          type: string
+          description: Demographic group the voice represents.
+          example: General American
+        genre:
+          type: array
+          description: Genres the voice is suitable for.
+          items:
+            type: string
+          example:
+            - Conversational
+        language:
+          type: string
+          description: Spoken language the voice is usable for.
+          example: English
+        lang:
+          type: string
+          description: Value passed as `lang` when synthesizing with this speaker.
+          example: eng
+        modelId:
+          type: string
+          description: Model id that the speaker is available under.
+          example: mistv3
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error code or short identifier.
+        message:
+          type: string
+          description: Human-readable error message.
+        detail:
+          type: string
+          description: Additional detail about the error.

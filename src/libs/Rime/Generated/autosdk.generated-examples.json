@@ -1,0 +1,15 @@
+{
+  "Examples": [
+    {
+      "Order": 1,
+      "Title": "List all available voices",
+      "Slug": "listvoices",
+      "Description": "Returns a mapping of \u0060modelId\u0060 \u2192 language code \u2192 list of voice names for every\nvoice supported by Rime. Language keys follow ISO 639-2 (e.g. \u0060eng\u0060, \u0060spa\u0060).",
+      "Language": "csharp",
+      "Code": "using var client = new RimeClient(apiKey);\nvar response = await client.Voices.ListVoicesAsync();\n\n// Example response:\n// {\n//   \u0022mistv3\u0022: {\n//     \u0022eng\u0022: [\n//       \u0022abbie\u0022,\n//       \u0022allison\u0022\n//     ]\n//   },\n//   \u0022mistv2\u0022: {\n//     \u0022eng\u0022: [\n//       \u0022abbie\u0022\n//     ],\n//     \u0022spa\u0022: [\n//       \u0022isa\u0022,\n//       \u0022mari\u0022\n//     ]\n//   },\n//   \u0022arcana\u0022: {\n//     \u0022any\u0022: [\n//       \u0022luna\u0022,\n//       \u0022celeste\u0022\n//     ]\n//   }\n// }",
+      "Format": "sdk",
+      "OperationId": "listVoices",
+      "Setup": "This example assumes \u0060using Rime;\u0060 is in scope and \u0060apiKey\u0060 contains the required credential."
+    }
+  ]
+}
