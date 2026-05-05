@@ -27,6 +27,38 @@ namespace Rime
         /// Supported `Accept` values: `audio/webm;codecs=opus`, `audio/ogg;codecs=opus`,<br/>
         /// `audio/mp3`, `audio/wav`, `audio/pcm`, `audio/x-mulaw`.
         /// </summary>
+        /// <param name="request"></param>
+        /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
+        /// <param name="cancellationToken">The token to cancel the operation with</param>
+        /// <exception cref="global::Rime.ApiException"></exception>
+        global::System.Threading.Tasks.Task<global::System.IO.Stream> CreateTtsAsStreamAsync(
+
+            global::Rime.TtsRequest request,
+            global::Rime.AutoSDKRequestOptions? requestOptions = default,
+            global::System.Threading.CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Generate speech (Mist v3 / Mist v2 / Arcana)<br/>
+        /// Synthesize speech from text using Rime's TTS models (`arcana`, `mistv2`, or `mistv3`).<br/>
+        /// Audio bytes are returned in the format indicated by the `Accept` header.<br/>
+        /// Supported `Accept` values: `audio/webm;codecs=opus`, `audio/ogg;codecs=opus`,<br/>
+        /// `audio/mp3`, `audio/wav`, `audio/pcm`, `audio/x-mulaw`.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
+        /// <param name="cancellationToken">The token to cancel the operation with</param>
+        /// <exception cref="global::Rime.ApiException"></exception>
+        global::System.Threading.Tasks.Task<global::Rime.AutoSDKHttpResponse<byte[]>> CreateTtsAsResponseAsync(
+
+            global::Rime.TtsRequest request,
+            global::Rime.AutoSDKRequestOptions? requestOptions = default,
+            global::System.Threading.CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Generate speech (Mist v3 / Mist v2 / Arcana)<br/>
+        /// Synthesize speech from text using Rime's TTS models (`arcana`, `mistv2`, or `mistv3`).<br/>
+        /// Audio bytes are returned in the format indicated by the `Accept` header.<br/>
+        /// Supported `Accept` values: `audio/webm;codecs=opus`, `audio/ogg;codecs=opus`,<br/>
+        /// `audio/mp3`, `audio/wav`, `audio/pcm`, `audio/x-mulaw`.
+        /// </summary>
         /// <param name="speaker">
         /// The voice used to synthesize the text. Must be one of the voices<br/>
         /// returned by `/data/voices/all-v2.json` for the selected `modelId`.<br/>
