@@ -63,5 +63,6 @@ namespace Rime
         public Error()
         {
         }
+
     }
 }
