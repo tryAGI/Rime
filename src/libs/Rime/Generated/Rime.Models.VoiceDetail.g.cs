@@ -170,5 +170,6 @@ namespace Rime
         public VoiceDetail()
         {
         }
+
     }
 }
