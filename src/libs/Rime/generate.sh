@@ -15,3 +15,20 @@ autosdk generate openapi.yaml \
   --output Generated \
   --exclude-deprecated-operations \
   --security-scheme Http:Header:Bearer
+
+rm -rf ../../cli/Rime.CLI
+
+autosdk cli-project openapi.yaml \
+  --output ../../cli/Rime.CLI \
+  --sdk-project ../../libs/Rime/Rime.csproj \
+  --targetFramework net10.0 \
+  --namespace Rime \
+  --clientClassName RimeClient \
+  --package-id Rime.CLI \
+  --tool-command-name rime \
+  --user-secrets-id Rime.CLI \
+  --api-key-env-var RIME_API_KEY \
+  --base-url-env-var RIME_BASE_URL \
+  --cli-credential-file \
+  --exclude-deprecated-operations \
+  --security-scheme Http:Header:Bearer
