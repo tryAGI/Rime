@@ -40,6 +40,13 @@ using Rime;
 using var client = new RimeClient(apiKey);
 ```
 
+### CLI
+
+```bash
+dotnet tool install --global Rime.CLI --prerelease
+rime api --help
+```
+
 <!-- EXAMPLES:START -->
 <!-- EXAMPLES:END -->
 
