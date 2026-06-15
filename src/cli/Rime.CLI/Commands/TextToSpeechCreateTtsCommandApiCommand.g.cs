@@ -158,16 +158,16 @@ Supported `Accept` values: `audio/webm;codecs=opus`, `audio/ogg;codecs=opus`,
                             cancellationToken).ConfigureAwait(false);
                         var speaker = parseResult.GetRequiredValue(Speaker);
                         var text = parseResult.GetRequiredValue(Text);
-                        var modelId = CliRuntime.WasSpecified(parseResult, ModelId) ? parseResult.GetValue(ModelId) : __requestBase is not null ? __requestBase.ModelId : default;
-                        var lang = CliRuntime.WasSpecified(parseResult, Lang) ? parseResult.GetValue(Lang) : __requestBase is not null ? __requestBase.Lang : default;
-                        var samplingRate = CliRuntime.WasSpecified(parseResult, SamplingRate) ? parseResult.GetValue(SamplingRate) : __requestBase is not null ? __requestBase.SamplingRate : default;
-                        var speedAlpha = CliRuntime.WasSpecified(parseResult, SpeedAlpha) ? parseResult.GetValue(SpeedAlpha) : __requestBase is not null ? __requestBase.SpeedAlpha : default;
-                        var timeScaleFactor = CliRuntime.WasSpecified(parseResult, TimeScaleFactor) ? parseResult.GetValue(TimeScaleFactor) : __requestBase is not null ? __requestBase.TimeScaleFactor : default;
-                        var pauseBetweenBrackets = CliRuntime.WasSpecified(parseResult, PauseBetweenBrackets) ? parseResult.GetValue(PauseBetweenBrackets) : __requestBase is not null ? __requestBase.PauseBetweenBrackets : default;
-                        var phonemizeBetweenBrackets = CliRuntime.WasSpecified(parseResult, PhonemizeBetweenBrackets) ? parseResult.GetValue(PhonemizeBetweenBrackets) : __requestBase is not null ? __requestBase.PhonemizeBetweenBrackets : default;
-                        var inlineSpeedAlpha = CliRuntime.WasSpecified(parseResult, InlineSpeedAlpha) ? parseResult.GetValue(InlineSpeedAlpha) : __requestBase is not null ? __requestBase.InlineSpeedAlpha : default;
-                        var noTextNormalization = CliRuntime.WasSpecified(parseResult, NoTextNormalization) ? parseResult.GetValue(NoTextNormalization) : __requestBase is not null ? __requestBase.NoTextNormalization : default;
-                        var saveOovs = CliRuntime.WasSpecified(parseResult, SaveOovs) ? parseResult.GetValue(SaveOovs) : __requestBase is not null ? __requestBase.SaveOovs : default;
+                        var modelId = CliRuntime.WasSpecified(parseResult, ModelId) ? parseResult.GetValue(ModelId) : (__requestBase is { } __ModelIdBaseValue ? __ModelIdBaseValue.ModelId : default);
+                        var lang = CliRuntime.WasSpecified(parseResult, Lang) ? parseResult.GetValue(Lang) : (__requestBase is { } __LangBaseValue ? __LangBaseValue.Lang : default);
+                        var samplingRate = CliRuntime.WasSpecified(parseResult, SamplingRate) ? parseResult.GetValue(SamplingRate) : (__requestBase is { } __SamplingRateBaseValue ? __SamplingRateBaseValue.SamplingRate : default);
+                        var speedAlpha = CliRuntime.WasSpecified(parseResult, SpeedAlpha) ? parseResult.GetValue(SpeedAlpha) : (__requestBase is { } __SpeedAlphaBaseValue ? __SpeedAlphaBaseValue.SpeedAlpha : default);
+                        var timeScaleFactor = CliRuntime.WasSpecified(parseResult, TimeScaleFactor) ? parseResult.GetValue(TimeScaleFactor) : (__requestBase is { } __TimeScaleFactorBaseValue ? __TimeScaleFactorBaseValue.TimeScaleFactor : default);
+                        var pauseBetweenBrackets = CliRuntime.WasSpecified(parseResult, PauseBetweenBrackets) ? parseResult.GetValue(PauseBetweenBrackets) : (__requestBase is { } __PauseBetweenBracketsBaseValue ? __PauseBetweenBracketsBaseValue.PauseBetweenBrackets : default);
+                        var phonemizeBetweenBrackets = CliRuntime.WasSpecified(parseResult, PhonemizeBetweenBrackets) ? parseResult.GetValue(PhonemizeBetweenBrackets) : (__requestBase is { } __PhonemizeBetweenBracketsBaseValue ? __PhonemizeBetweenBracketsBaseValue.PhonemizeBetweenBrackets : default);
+                        var inlineSpeedAlpha = CliRuntime.WasSpecified(parseResult, InlineSpeedAlpha) ? parseResult.GetValue(InlineSpeedAlpha) : (__requestBase is { } __InlineSpeedAlphaBaseValue ? __InlineSpeedAlphaBaseValue.InlineSpeedAlpha : default);
+                        var noTextNormalization = CliRuntime.WasSpecified(parseResult, NoTextNormalization) ? parseResult.GetValue(NoTextNormalization) : (__requestBase is { } __NoTextNormalizationBaseValue ? __NoTextNormalizationBaseValue.NoTextNormalization : default);
+                        var saveOovs = CliRuntime.WasSpecified(parseResult, SaveOovs) ? parseResult.GetValue(SaveOovs) : (__requestBase is { } __SaveOovsBaseValue ? __SaveOovsBaseValue.SaveOovs : default);
                 using var client = await CliRuntime.CreateClientAsync(parseResult, cancellationToken).ConfigureAwait(false);
 
 
