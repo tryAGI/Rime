@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+install_autosdk_cli() {
+  dotnet tool update --global autosdk.cli --prerelease >/dev/null 2>&1 || \
+    dotnet tool install --global autosdk.cli --prerelease
+}
+
 # Rime AI has no public OpenAPI spec - openapi.yaml is hand-written from
 # the public docs at https://docs.rime.ai and lives at the repo root.
-
-dotnet tool install --global autosdk.cli --prerelease
+install_autosdk_cli
 rm -rf Generated
 cp ../../../openapi.yaml openapi.yaml
 
