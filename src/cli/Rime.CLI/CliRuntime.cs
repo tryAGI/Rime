@@ -24,14 +24,12 @@ internal static class CliRuntime
             ? new global::System.Collections.Generic.List<global::Rime.EndPointAuthorization>()
             : new global::System.Collections.Generic.List<global::Rime.EndPointAuthorization>
             {
-        new global::Rime.EndPointAuthorization
-        {
-            Type = "Http",
-            SchemeId = "HttpBearer",
-            Location = "Header",
-            Name = "Bearer",
-            Value = apiKey,
-        },
+        CreateAuthorization(
+            type: "Http",
+            schemeId: "HttpBearer",
+            location: "Header",
+            name: "Bearer",
+            value: apiKey),
             };
         var baseUri = ResolveBaseUri(parseResult);
 
@@ -40,6 +38,30 @@ internal static class CliRuntime
             baseUri: baseUri,
             authorizations: authorizations,
             disposeHttpClient: true);
+    }
+
+    private static global::Rime.EndPointAuthorization CreateAuthorization(
+        string type,
+        string schemeId,
+        string location,
+        string name,
+        string value)
+    {
+        var authorization = new global::Rime.EndPointAuthorization
+        {
+            Type = type,
+            Location = location,
+            Name = name,
+            Value = value,
+        };
+
+        var schemeIdProperty = typeof(global::Rime.EndPointAuthorization).GetProperty("SchemeId");
+        if (schemeIdProperty?.CanWrite == true)
+        {
+            schemeIdProperty.SetValue(authorization, schemeId);
+        }
+
+        return authorization;
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
