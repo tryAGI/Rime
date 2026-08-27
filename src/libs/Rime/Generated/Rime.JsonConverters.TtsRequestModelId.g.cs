@@ -20,7 +20,7 @@ namespace Rime.JsonConverters
                     {
                         return global::Rime.TtsRequestModelIdExtensions.ToEnum(stringValue) ?? default;
                     }
-                    
+
                     break;
                 }
                 case global::System.Text.Json.JsonTokenType.Number:

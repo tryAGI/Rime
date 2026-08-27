@@ -4,7 +4,7 @@
 namespace Rime
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public sealed partial class ListVoicesResponse2
     {
