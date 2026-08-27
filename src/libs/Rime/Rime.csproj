@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Nuget">
-    <Description>C# SDK for the Rime AI API -- ultra-low-latency (&lt;200ms) conversational text-to-speech with 300+ voices across Arcana, Mist v2, and Mist v3 models.</Description>
+    <Description>C# SDK for the Rime AI API -- conversational text-to-speech with hundreds of voices across Coda, Mist v2, and Mist v3 models.</Description>
     <PackageId>Rime</PackageId>
     <PackageTags>api;client;sdk;dotnet;openapi;rime;text-to-speech;tts;voice;ai;autosdk</PackageTags>
   </PropertyGroup>

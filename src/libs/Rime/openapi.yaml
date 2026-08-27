@@ -3,7 +3,7 @@ info:
   title: Rime AI API
   description: |
     Ultra-low-latency (<200ms) conversational text-to-speech API by Rime AI.
-    Features 300+ voices across multiple models (Arcana, Mist v2, Mist v3) with
+    Features hundreds of voices across Coda, Mist v2, and Mist v3 with
     streaming HTTP output, WebSocket streaming, and custom pronunciation control.
   version: "1.0.0"
   contact:
@@ -21,13 +21,16 @@ paths:
   /v1/rime-tts:
     post:
       operationId: createTts
-      summary: Generate speech (Mist v3 / Mist v2 / Arcana)
+      summary: Generate speech (Coda / Mist v3 / Mist v2)
       description: |
-        Synthesize speech from text using Rime's TTS models (`arcana`, `mistv2`, or `mistv3`).
+        Synthesize speech from text using Rime's TTS models (`coda`, `mistv3`, or `mistv2`).
+        The retired `arcana` identifier remains accepted by Rime as a compatibility alias
+        that is served by Coda, but new applications should send `coda`.
         Audio bytes are returned in the format indicated by the `Accept` header.
 
         Supported `Accept` values: `audio/webm;codecs=opus`, `audio/ogg;codecs=opus`,
-        `audio/mp3`, `audio/wav`, `audio/pcm`, `audio/x-mulaw`.
+        `audio/mpeg`, `audio/wav`, `audio/L16`, `audio/PCMU`. The aliases `audio/mp3`,
+        `audio/pcm`, and `audio/x-mulaw` are deprecated but remain accepted by Rime.
       tags:
         - TextToSpeech
       requestBody:
@@ -44,7 +47,7 @@ paths:
               schema:
                 type: string
                 format: binary
-            audio/mp3:
+            audio/mpeg:
               schema:
                 type: string
                 format: binary
@@ -52,7 +55,7 @@ paths:
               schema:
                 type: string
                 format: binary
-            audio/pcm:
+            audio/L16:
               schema:
                 type: string
                 format: binary
@@ -64,7 +67,7 @@ paths:
               schema:
                 type: string
                 format: binary
-            audio/x-mulaw:
+            audio/PCMU:
               schema:
                 type: string
                 format: binary
@@ -149,32 +152,37 @@ components:
         text:
           type: string
           description: |
-            The text to speak. Character limits depend on the model:
-            Mist v2/v3 allow 500 characters per request via the API, Arcana allows 3,000.
+            The text to speak. The cloud API accepts up to 1,000 characters per request.
+          maxLength: 1000
           example: "Hello from Rime AI."
         modelId:
           type: string
           description: |
-            The TTS model to use. `arcana` for flagship conversational voices,
-            `mistv3` for low-latency streaming, `mistv2` as a fallback.
+            The TTS model to use. `coda` is the flagship model for new applications,
+            `mistv3` prioritizes lowest time to first audio, and `mistv2` retains inline
+            pronunciation control. `arcana` is a retired compatibility alias now served
+            by Coda; use `coda` for new requests.
           enum:
+            - coda
             - arcana
             - mistv3
             - mistv2
-          example: mistv3
+          example: coda
         lang:
           type: string
           description: |
             Language identifier for the selected speaker. Must match the speaker's
-            language. Defaults to `eng`/`en` depending on model.
-          example: eng
+            language. Both two-letter and three-letter ISO codes are accepted. Coda
+            supports English, Arabic, French, German, Hindi, Italian, Japanese,
+            Portuguese, and Spanish; Mist v2/v3 support English, French, German,
+            and Spanish.
+          example: en
         samplingRate:
           type: integer
           description: |
-            Output sample rate in Hz. Allowed range is 4000-44100 for Mist v2;
-            Mist v3 and Arcana default to 24000 when omitted.
-          minimum: 4000
-          maximum: 44100
+            Output sample rate in Hz. Mist v2 accepts 4000-44100. Coda and Mist v3
+            default to 24000; the public API's common range is 8000-96000, with values
+            above 24000 produced by upsampling.
           example: 24000
         speedAlpha:
           type: number
@@ -187,8 +195,11 @@ components:
           type: number
           format: float
           description: |
-            Adjusts the speed of speech for Mist v3 / Arcana. Values below 1 slow down
-            the audio; values above 1 speed it up.
+            Adjusts the speed of speech for Coda and Mist v3. Values above 1.0 slow
+            down the audio and values below 1.0 speed it up. Values outside 0.4-2.5
+            are clamped by the API.
+          minimum: 0.4
+          maximum: 2.5
           example: 1.0
         pauseBetweenBrackets:
           type: boolean
@@ -200,12 +211,13 @@ components:
           type: boolean
           description: |
             Enables custom pronunciation via phonemes specified inside curly brackets.
+            Supported by Mist v2; Coda and Mist v3 accept and ignore this option.
           default: false
         inlineSpeedAlpha:
           type: string
           description: |
             Comma-separated per-word speed multipliers for words inside square brackets.
-            Values > 1.0 accelerate, values < 1.0 decelerate.
+            Values below 1.0 speed up speech and values above 1.0 slow it down.
           example: "1.2,0.8"
         noTextNormalization:
           type: boolean
@@ -215,15 +227,18 @@ components:
         saveOovs:
           type: boolean
           description: |
-            Save out-of-vocabulary words for later review. Available only on Mist v2.
+            Legacy Mist v2 option retained for backward compatibility. The Speech QA
+            dashboard it reported to has retired, and Rime no longer documents this
+            option for new integrations.
           default: false
 
     ListVoicesResponse:
       type: object
       description: |
-        Object keyed by `modelId` (e.g. `mistv3`, `mistv2`, `arcana`). Each value is
+        Object keyed by `modelId` (e.g. `coda`, `mistv3`, `mistv2`). Each value is
         an object keyed by ISO 639-2 language code whose value is an array of voice
-        name strings.
+        name strings. The public catalog may also contain retired or externally hosted
+        models that are not available through Rime cloud.
       additionalProperties:
         type: object
         additionalProperties:
@@ -231,6 +246,12 @@ components:
           items:
             type: string
       example:
+        coda:
+          eng:
+            - astra
+            - albion
+          ara:
+            - salma
         mistv3:
           eng:
             - abbie
@@ -241,10 +262,6 @@ components:
           spa:
             - isa
             - mari
-        arcana:
-          any:
-            - luna
-            - celeste
 
     VoiceDetail:
       type: object
@@ -280,6 +297,18 @@ components:
             type: string
           example:
             - Conversational
+        description:
+          type: string
+          description: Human-readable description of the voice's sound and delivery.
+          example: Bright, lively California, quick and expressive.
+        styles:
+          type: array
+          description: Optional style labels associated with the voice.
+          items:
+            type: string
+          example:
+            - formal
+            - more energetic
         language:
           type: string
           description: Spoken language the voice is usable for.
@@ -291,7 +320,11 @@ components:
         modelId:
           type: string
           description: Model id that the speaker is available under.
-          example: mistv3
+          example: coda
+        flagship:
+          type: boolean
+          description: Whether Rime identifies this voice as a flagship voice.
+          example: true
 
     Error:
       type: object

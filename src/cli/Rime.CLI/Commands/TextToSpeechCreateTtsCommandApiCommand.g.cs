@@ -19,8 +19,7 @@ returned by `/data/voices/all-v2.json` for the selected `modelId`.
     private static Option<string> Text { get; } = new(
         name: @"--text")
     {
-        Description = @"The text to speak. Character limits depend on the model:
-Mist v2/v3 allow 500 characters per request via the API, Arcana allows 3,000.
+        Description = @"The text to speak. The cloud API accepts up to 1,000 characters per request.
 ",
         Required = true,
     };
@@ -28,8 +27,10 @@ Mist v2/v3 allow 500 characters per request via the API, Arcana allows 3,000.
     private static Option<global::Rime.TtsRequestModelId?> ModelId { get; } = new(
         name: @"--model-id")
     {
-        Description = @"The TTS model to use. `arcana` for flagship conversational voices,
-`mistv3` for low-latency streaming, `mistv2` as a fallback.
+        Description = @"The TTS model to use. `coda` is the flagship model for new applications,
+`mistv3` prioritizes lowest time to first audio, and `mistv2` retains inline
+pronunciation control. `arcana` is a retired compatibility alias now served
+by Coda; use `coda` for new requests.
 ",
     };
 
@@ -37,15 +38,19 @@ Mist v2/v3 allow 500 characters per request via the API, Arcana allows 3,000.
         name: @"--lang")
     {
         Description = @"Language identifier for the selected speaker. Must match the speaker's
-language. Defaults to `eng`/`en` depending on model.
+language. Both two-letter and three-letter ISO codes are accepted. Coda
+supports English, Arabic, French, German, Hindi, Italian, Japanese,
+Portuguese, and Spanish; Mist v2/v3 support English, French, German,
+and Spanish.
 ",
     };
 
     private static Option<int?> SamplingRate { get; } = new(
         name: @"--sampling-rate")
     {
-        Description = @"Output sample rate in Hz. Allowed range is 4000-44100 for Mist v2;
-Mist v3 and Arcana default to 24000 when omitted.
+        Description = @"Output sample rate in Hz. Mist v2 accepts 4000-44100. Coda and Mist v3
+default to 24000; the public API's common range is 8000-96000, with values
+above 24000 produced by upsampling.
 ",
     };
 
@@ -60,8 +65,9 @@ above 1.0 slow down.
     private static Option<float?> TimeScaleFactor { get; } = new(
         name: @"--time-scale-factor")
     {
-        Description = @"Adjusts the speed of speech for Mist v3 / Arcana. Values below 1 slow down
-the audio; values above 1 speed it up.
+        Description = @"Adjusts the speed of speech for Coda and Mist v3. Values above 1.0 slow
+down the audio and values below 1.0 speed it up. Values outside 0.4-2.5
+are clamped by the API.
 ",
     };
 
@@ -74,13 +80,14 @@ duration specified in milliseconds (e.g. `Hello <500> world`).
     private static Option<bool?> PhonemizeBetweenBrackets { get; } = CliRuntime.CreateNullableBoolOption(
         name: @"--phonemize-between-brackets",
         description: @"Enables custom pronunciation via phonemes specified inside curly brackets.
+Supported by Mist v2; Coda and Mist v3 accept and ignore this option.
 ");
 
     private static Option<string?> InlineSpeedAlpha { get; } = new(
         name: @"--inline-speed-alpha")
     {
         Description = @"Comma-separated per-word speed multipliers for words inside square brackets.
-Values > 1.0 accelerate, values < 1.0 decelerate.
+Values below 1.0 speed up speech and values above 1.0 slow it down.
 ",
     };
 
@@ -91,7 +98,9 @@ Values > 1.0 accelerate, values < 1.0 decelerate.
 
     private static Option<bool?> SaveOovs { get; } = CliRuntime.CreateNullableBoolOption(
         name: @"--save-oovs",
-        description: @"Save out-of-vocabulary words for later review. Available only on Mist v2.
+        description: @"Legacy Mist v2 option retained for backward compatibility. The Speech QA
+dashboard it reported to has retired, and Rime no longer documents this
+option for new integrations.
 ");
       private static Option<string?> Input { get; } = new(@"--input")
       {
@@ -112,12 +121,15 @@ Values > 1.0 accelerate, values < 1.0 decelerate.
 
     public static Command Create()
     {
-        var command = new Command(@"create-tts", @"Generate speech (Mist v3 / Mist v2 / Arcana)
-Synthesize speech from text using Rime's TTS models (`arcana`, `mistv2`, or `mistv3`).
+        var command = new Command(@"create-tts", @"Generate speech (Coda / Mist v3 / Mist v2)
+Synthesize speech from text using Rime's TTS models (`coda`, `mistv3`, or `mistv2`).
+The retired `arcana` identifier remains accepted by Rime as a compatibility alias
+that is served by Coda, but new applications should send `coda`.
 Audio bytes are returned in the format indicated by the `Accept` header.
 
 Supported `Accept` values: `audio/webm;codecs=opus`, `audio/ogg;codecs=opus`,
-`audio/mp3`, `audio/wav`, `audio/pcm`, `audio/x-mulaw`.
+`audio/mpeg`, `audio/wav`, `audio/L16`, `audio/PCMU`. The aliases `audio/mp3`,
+`audio/pcm`, and `audio/x-mulaw` are deprecated but remain accepted by Rime.
 ");
                         command.Options.Add(Speaker);
                         command.Options.Add(Text);

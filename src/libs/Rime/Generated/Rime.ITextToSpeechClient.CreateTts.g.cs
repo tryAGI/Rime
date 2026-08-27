@@ -5,11 +5,14 @@ namespace Rime
     public partial interface ITextToSpeechClient
     {
         /// <summary>
-        /// Generate speech (Mist v3 / Mist v2 / Arcana)<br/>
-        /// Synthesize speech from text using Rime's TTS models (`arcana`, `mistv2`, or `mistv3`).<br/>
+        /// Generate speech (Coda / Mist v3 / Mist v2)<br/>
+        /// Synthesize speech from text using Rime's TTS models (`coda`, `mistv3`, or `mistv2`).<br/>
+        /// The retired `arcana` identifier remains accepted by Rime as a compatibility alias<br/>
+        /// that is served by Coda, but new applications should send `coda`.<br/>
         /// Audio bytes are returned in the format indicated by the `Accept` header.<br/>
         /// Supported `Accept` values: `audio/webm;codecs=opus`, `audio/ogg;codecs=opus`,<br/>
-        /// `audio/mp3`, `audio/wav`, `audio/pcm`, `audio/x-mulaw`.
+        /// `audio/mpeg`, `audio/wav`, `audio/L16`, `audio/PCMU`. The aliases `audio/mp3`,<br/>
+        /// `audio/pcm`, and `audio/x-mulaw` are deprecated but remain accepted by Rime.
         /// </summary>
         /// <param name="request"></param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
@@ -21,11 +24,14 @@ namespace Rime
             global::Rime.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default);
         /// <summary>
-        /// Generate speech (Mist v3 / Mist v2 / Arcana)<br/>
-        /// Synthesize speech from text using Rime's TTS models (`arcana`, `mistv2`, or `mistv3`).<br/>
+        /// Generate speech (Coda / Mist v3 / Mist v2)<br/>
+        /// Synthesize speech from text using Rime's TTS models (`coda`, `mistv3`, or `mistv2`).<br/>
+        /// The retired `arcana` identifier remains accepted by Rime as a compatibility alias<br/>
+        /// that is served by Coda, but new applications should send `coda`.<br/>
         /// Audio bytes are returned in the format indicated by the `Accept` header.<br/>
         /// Supported `Accept` values: `audio/webm;codecs=opus`, `audio/ogg;codecs=opus`,<br/>
-        /// `audio/mp3`, `audio/wav`, `audio/pcm`, `audio/x-mulaw`.
+        /// `audio/mpeg`, `audio/wav`, `audio/L16`, `audio/PCMU`. The aliases `audio/mp3`,<br/>
+        /// `audio/pcm`, and `audio/x-mulaw` are deprecated but remain accepted by Rime.
         /// </summary>
         /// <param name="request"></param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
@@ -37,11 +43,14 @@ namespace Rime
             global::Rime.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default);
         /// <summary>
-        /// Generate speech (Mist v3 / Mist v2 / Arcana)<br/>
-        /// Synthesize speech from text using Rime's TTS models (`arcana`, `mistv2`, or `mistv3`).<br/>
+        /// Generate speech (Coda / Mist v3 / Mist v2)<br/>
+        /// Synthesize speech from text using Rime's TTS models (`coda`, `mistv3`, or `mistv2`).<br/>
+        /// The retired `arcana` identifier remains accepted by Rime as a compatibility alias<br/>
+        /// that is served by Coda, but new applications should send `coda`.<br/>
         /// Audio bytes are returned in the format indicated by the `Accept` header.<br/>
         /// Supported `Accept` values: `audio/webm;codecs=opus`, `audio/ogg;codecs=opus`,<br/>
-        /// `audio/mp3`, `audio/wav`, `audio/pcm`, `audio/x-mulaw`.
+        /// `audio/mpeg`, `audio/wav`, `audio/L16`, `audio/PCMU`. The aliases `audio/mp3`,<br/>
+        /// `audio/pcm`, and `audio/x-mulaw` are deprecated but remain accepted by Rime.
         /// </summary>
         /// <param name="request"></param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
@@ -53,11 +62,14 @@ namespace Rime
             global::Rime.AutoSDKRequestOptions? requestOptions = default,
             global::System.Threading.CancellationToken cancellationToken = default);
         /// <summary>
-        /// Generate speech (Mist v3 / Mist v2 / Arcana)<br/>
-        /// Synthesize speech from text using Rime's TTS models (`arcana`, `mistv2`, or `mistv3`).<br/>
+        /// Generate speech (Coda / Mist v3 / Mist v2)<br/>
+        /// Synthesize speech from text using Rime's TTS models (`coda`, `mistv3`, or `mistv2`).<br/>
+        /// The retired `arcana` identifier remains accepted by Rime as a compatibility alias<br/>
+        /// that is served by Coda, but new applications should send `coda`.<br/>
         /// Audio bytes are returned in the format indicated by the `Accept` header.<br/>
         /// Supported `Accept` values: `audio/webm;codecs=opus`, `audio/ogg;codecs=opus`,<br/>
-        /// `audio/mp3`, `audio/wav`, `audio/pcm`, `audio/x-mulaw`.
+        /// `audio/mpeg`, `audio/wav`, `audio/L16`, `audio/PCMU`. The aliases `audio/mp3`,<br/>
+        /// `audio/pcm`, and `audio/x-mulaw` are deprecated but remain accepted by Rime.
         /// </summary>
         /// <param name="speaker">
         /// The voice used to synthesize the text. Must be one of the voices<br/>
@@ -65,23 +77,28 @@ namespace Rime
         /// Example: cove
         /// </param>
         /// <param name="text">
-        /// The text to speak. Character limits depend on the model:<br/>
-        /// Mist v2/v3 allow 500 characters per request via the API, Arcana allows 3,000.<br/>
+        /// The text to speak. The cloud API accepts up to 1,000 characters per request.<br/>
         /// Example: Hello from Rime AI.
         /// </param>
         /// <param name="modelId">
-        /// The TTS model to use. `arcana` for flagship conversational voices,<br/>
-        /// `mistv3` for low-latency streaming, `mistv2` as a fallback.<br/>
-        /// Example: mistv3
+        /// The TTS model to use. `coda` is the flagship model for new applications,<br/>
+        /// `mistv3` prioritizes lowest time to first audio, and `mistv2` retains inline<br/>
+        /// pronunciation control. `arcana` is a retired compatibility alias now served<br/>
+        /// by Coda; use `coda` for new requests.<br/>
+        /// Example: coda
         /// </param>
         /// <param name="lang">
         /// Language identifier for the selected speaker. Must match the speaker's<br/>
-        /// language. Defaults to `eng`/`en` depending on model.<br/>
-        /// Example: eng
+        /// language. Both two-letter and three-letter ISO codes are accepted. Coda<br/>
+        /// supports English, Arabic, French, German, Hindi, Italian, Japanese,<br/>
+        /// Portuguese, and Spanish; Mist v2/v3 support English, French, German,<br/>
+        /// and Spanish.<br/>
+        /// Example: en
         /// </param>
         /// <param name="samplingRate">
-        /// Output sample rate in Hz. Allowed range is 4000-44100 for Mist v2;<br/>
-        /// Mist v3 and Arcana default to 24000 when omitted.<br/>
+        /// Output sample rate in Hz. Mist v2 accepts 4000-44100. Coda and Mist v3<br/>
+        /// default to 24000; the public API's common range is 8000-96000, with values<br/>
+        /// above 24000 produced by upsampling.<br/>
         /// Example: 24000
         /// </param>
         /// <param name="speedAlpha">
@@ -90,8 +107,9 @@ namespace Rime
         /// Example: 1.0
         /// </param>
         /// <param name="timeScaleFactor">
-        /// Adjusts the speed of speech for Mist v3 / Arcana. Values below 1 slow down<br/>
-        /// the audio; values above 1 speed it up.<br/>
+        /// Adjusts the speed of speech for Coda and Mist v3. Values above 1.0 slow<br/>
+        /// down the audio and values below 1.0 speed it up. Values outside 0.4-2.5<br/>
+        /// are clamped by the API.<br/>
         /// Example: 1.0
         /// </param>
         /// <param name="pauseBetweenBrackets">
@@ -101,11 +119,12 @@ namespace Rime
         /// </param>
         /// <param name="phonemizeBetweenBrackets">
         /// Enables custom pronunciation via phonemes specified inside curly brackets.<br/>
+        /// Supported by Mist v2; Coda and Mist v3 accept and ignore this option.<br/>
         /// Default Value: false
         /// </param>
         /// <param name="inlineSpeedAlpha">
         /// Comma-separated per-word speed multipliers for words inside square brackets.<br/>
-        /// Values &gt; 1.0 accelerate, values &lt; 1.0 decelerate.<br/>
+        /// Values below 1.0 speed up speech and values above 1.0 slow it down.<br/>
         /// Example: 1.2,0.8
         /// </param>
         /// <param name="noTextNormalization">
@@ -113,7 +132,9 @@ namespace Rime
         /// Default Value: false
         /// </param>
         /// <param name="saveOovs">
-        /// Save out-of-vocabulary words for later review. Available only on Mist v2.<br/>
+        /// Legacy Mist v2 option retained for backward compatibility. The Speech QA<br/>
+        /// dashboard it reported to has retired, and Rime no longer documents this<br/>
+        /// option for new integrations.<br/>
         /// Default Value: false
         /// </param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>

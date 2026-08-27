@@ -19,7 +19,7 @@ public partial class Tests
 
         metadata.Should().NotBeNull();
         metadata!.ProviderName.Should().Be("rime");
-        metadata.DefaultModelId.Should().Be("mistv3");
+        metadata.DefaultModelId.Should().Be("coda");
         metadata.ProviderUri.Should().NotBeNull();
         ttsClient.GetService<RimeClient>().Should().BeSameAs(client);
     }
@@ -70,7 +70,7 @@ public partial class Tests
         capturedRequest.ModelId.Should().Be(TtsRequestModelId.Mistv3);
         capturedRequest.Lang.Should().Be("eng");
         capturedRequest.SamplingRate.Should().Be(24000);
-        capturedRequest.TimeScaleFactor.Should().BeApproximately(1.2f, 0.00001f);
+        capturedRequest.TimeScaleFactor.Should().BeApproximately(1f / 1.2f, 0.00001f);
         capturedRequest.PauseBetweenBrackets.Should().BeTrue();
         capturedRequest.InlineSpeedAlpha.Should().Be("1.1,0.9");
 
@@ -88,6 +88,38 @@ public partial class Tests
         document.RootElement.GetProperty("speaker").GetString().Should().Be("cove");
         document.RootElement.GetProperty("text").GetString().Should().Be("Hello from Rime.");
         document.RootElement.GetProperty("modelId").GetString().Should().Be("mistv3");
+    }
+
+    [TestMethod]
+    [DataRow("ar-AE", "ara")]
+    [DataRow("hi-IN", "hin")]
+    [DataRow("it-IT", "ita")]
+    [DataRow("ja-JP", "jpn")]
+    public async Task TextToSpeechClient_MapsCodaLanguages(string language, string expectedLanguage)
+    {
+        var handler = new StaticResponseHandler(HttpStatusCode.OK, [1], "audio/mpeg");
+        using var client = new RimeClient(
+            "test-api-key",
+            new HttpClient(handler)
+            {
+                BaseAddress = new Uri(RimeClient.DefaultBaseUrl),
+            });
+        Microsoft.Extensions.AI.ITextToSpeechClient ttsClient = client;
+
+        var response = await ttsClient.GetAudioAsync(
+            "Current Coda language support.",
+            new TextToSpeechOptions
+            {
+                VoiceId = "astra",
+                Language = language,
+            });
+
+        response.ModelId.Should().Be("coda");
+        handler.LastRequest!.Headers.Accept.Single().MediaType.Should().Be("audio/mpeg");
+
+        using var document = JsonDocument.Parse(handler.LastRequestBody!);
+        document.RootElement.GetProperty("modelId").GetString().Should().Be("coda");
+        document.RootElement.GetProperty("lang").GetString().Should().Be(expectedLanguage);
     }
 
     [TestMethod]

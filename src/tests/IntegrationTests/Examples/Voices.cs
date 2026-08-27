@@ -22,7 +22,7 @@ public partial class Tests
         voices.Should().NotBeNull();
         voices.Should().NotBeEmpty();
 
-        //// Each model (mistv3, mistv2, arcana) has at least one language bucket.
+        //// Each returned model (including coda, mistv3, and mistv2) has at least one language bucket.
         voices.Values.Should().OnlyContain(langs => langs.Count > 0);
     }
 
@@ -31,7 +31,7 @@ public partial class Tests
     {
         using var client = GetAuthenticatedClient();
 
-        //// Fetch detailed voice metadata (speaker, gender, dialect, genre, etc.).
+        //// Fetch detailed voice metadata (speaker, gender, dialect, genre, styles, flagship, etc.).
         var details = await client.Voices.ListVoiceDetailsAsync();
 
         details.Should().NotBeNull();

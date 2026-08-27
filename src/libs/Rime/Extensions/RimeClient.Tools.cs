@@ -14,28 +14,33 @@ public static class RimeToolExtensions
     /// </summary>
     /// <param name="client">The Rime client to use.</param>
     /// <param name="defaultSpeaker">
-    /// Default voice name (e.g. "cove", "abbie"). Can be overridden by the LLM's function call.
+    /// Default voice name (e.g. "astra", "cove"). Can be overridden by the LLM's function call.
     /// </param>
     /// <param name="defaultModel">
-    /// Default TTS model ("arcana", "mistv3", or "mistv2"). Defaults to "mistv3" for low latency.
+    /// Default TTS model ("coda", "mistv3", or "mistv2"). Defaults to "coda" for voice quality.
     /// </param>
     /// <returns>An AIFunction suitable for ChatOptions.Tools.</returns>
     [CLSCompliant(false)]
     public static AIFunction AsTextToSpeechTool(
         this RimeClient client,
-        string defaultSpeaker = "cove",
-        string defaultModel = "mistv3")
+        string defaultSpeaker = "astra",
+        string defaultModel = "coda")
     {
         ArgumentNullException.ThrowIfNull(client);
 
         return AIFunctionFactory.Create(
             async (string text, string? speaker, string? model, string? lang, CancellationToken cancellationToken) =>
             {
-                var modelId = (model ?? defaultModel).ToUpperInvariant() switch
+                var requestedModel = model ?? defaultModel;
+                var modelId = requestedModel.ToUpperInvariant() switch
                 {
-                    "ARCANA" => TtsRequestModelId.Arcana,
+                    "CODA" => TtsRequestModelId.Coda,
+                    "MISTV3" => TtsRequestModelId.Mistv3,
                     "MISTV2" => TtsRequestModelId.Mistv2,
-                    _ => TtsRequestModelId.Mistv3,
+                    "ARCANA" => TtsRequestModelId.Arcana,
+                    _ => throw new ArgumentException(
+                        $"Unsupported Rime TTS model '{requestedModel}'. Use 'coda', 'mistv3', or 'mistv2'.",
+                        nameof(model)),
                 };
 
                 var audio = await client.TextToSpeech.CreateTtsAsync(
@@ -49,8 +54,8 @@ public static class RimeToolExtensions
             },
             name: "RimeTextToSpeech",
             description: "Synthesizes natural-sounding speech from text using Rime AI. " +
-                         "Supports ultra-low-latency streaming via Mist v3, studio-quality via Arcana, " +
-                         "and 300+ voices. Returns a summary of the synthesized audio bytes.");
+                         "Supports flagship voice quality via Coda, ultra-low-latency streaming via Mist v3, " +
+                         "and hundreds of voices. Returns a summary of the synthesized audio bytes.");
     }
 
     /// <summary>
@@ -73,13 +78,13 @@ public static class RimeToolExtensions
                 return FormatVoiceCatalog(voices, model, lang);
             },
             name: "RimeListVoices",
-            description: "Lists available Rime AI voice names grouped by model (arcana / mistv3 / mistv2) " +
+            description: "Lists available Rime AI voice names grouped by model (coda / mistv3 / mistv2) " +
                          "and ISO 639-2 language code. Optionally filter by model and/or language.");
     }
 
     /// <summary>
     /// Creates an <see cref="AIFunction"/> that lists Rime AI voice details (speaker, gender, age,
-    /// country, dialect, demographic, genre, language, model).
+    /// country, dialect, demographic, genre, styles, description, language, model).
     /// </summary>
     /// <param name="client">The Rime client to use.</param>
     /// <returns>An AIFunction suitable for ChatOptions.Tools.</returns>
@@ -99,7 +104,8 @@ public static class RimeToolExtensions
             },
             name: "RimeListVoiceDetails",
             description: "Lists detailed Rime AI voice metadata (speaker name, gender, age, country, " +
-                         "dialect, demographic, genre, language, model). Optionally filter by gender, " +
+                         "dialect, demographic, genre, styles, description, language, model, flagship). " +
+                         "Optionally filter by gender, " +
                          "model, or language.");
     }
 
@@ -175,6 +181,9 @@ public static class RimeToolExtensions
             if (!string.IsNullOrEmpty(v.Dialect)) entry += $" ({v.Dialect})";
             if (!string.IsNullOrEmpty(v.Language)) entry += $" — {v.Language}";
             if (v.Genre is { Count: > 0 }) entry += $" — genres: {string.Join(", ", v.Genre)}";
+            if (v.Styles is { Count: > 0 }) entry += $" — styles: {string.Join(", ", v.Styles)}";
+            if (v.Flagship == true) entry += " — flagship";
+            if (!string.IsNullOrEmpty(v.Description)) entry += $" — {v.Description}";
             parts.Add(entry);
         }
 

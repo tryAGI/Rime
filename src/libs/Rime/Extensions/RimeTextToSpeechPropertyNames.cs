@@ -16,13 +16,13 @@ public static class RimeTextToSpeechPropertyNames
     /// <summary>Mist v2 speed control. Values below 1 speed up, values above 1 slow down.</summary>
     public const string SpeedAlpha = "rime:speed_alpha";
 
-    /// <summary>Mist v3 / Arcana speed control. Values below 1 slow down, values above 1 speed up.</summary>
+    /// <summary>Coda / Mist v3 speed control. Values below 1 speed up, values above 1 slow down.</summary>
     public const string TimeScaleFactor = "rime:time_scale_factor";
 
     /// <summary>Enable pauses between angle-bracket markers.</summary>
     public const string PauseBetweenBrackets = "rime:pause_between_brackets";
 
-    /// <summary>Enable phoneme pronunciation between curly-bracket markers.</summary>
+    /// <summary>Enable Mist v2 phoneme pronunciation between curly-bracket markers.</summary>
     public const string PhonemizeBetweenBrackets = "rime:phonemize_between_brackets";
 
     /// <summary>Comma-separated per-word speed multipliers for bracketed words.</summary>
@@ -31,6 +31,6 @@ public static class RimeTextToSpeechPropertyNames
     /// <summary>Skip text normalization when supported by the selected model.</summary>
     public const string NoTextNormalization = "rime:no_text_normalization";
 
-    /// <summary>Save out-of-vocabulary words when supported by the selected model.</summary>
+    /// <summary>Legacy Mist v2 out-of-vocabulary reporting option retained for compatibility.</summary>
     public const string SaveOovs = "rime:save_oovs";
 }
