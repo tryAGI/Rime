@@ -8,8 +8,8 @@ namespace Rime;
 
 public sealed partial class RimeClient : Microsoft.Extensions.AI.ITextToSpeechClient
 {
-    private const string DefaultTextToSpeechModel = "mistv3";
-    private const string DefaultSpeaker = "cove";
+    private const string DefaultTextToSpeechModel = "coda";
+    private const string DefaultSpeaker = "astra";
     private TextToSpeechClientMetadata? _textToSpeechMetadata;
 
     object? Microsoft.Extensions.AI.ITextToSpeechClient.GetService(Type serviceType, object? serviceKey)
@@ -141,7 +141,7 @@ public sealed partial class RimeClient : Microsoft.Extensions.AI.ITextToSpeechCl
             }
             else
             {
-                request.TimeScaleFactor ??= speed;
+                request.TimeScaleFactor ??= 1f / speed;
             }
         }
 
@@ -158,11 +158,18 @@ public sealed partial class RimeClient : Microsoft.Extensions.AI.ITextToSpeechCl
     {
         if (modelId is not { Length: > 0 })
         {
-            return TtsRequestModelId.Mistv3;
+            return TtsRequestModelId.Coda;
         }
 
-        return TtsRequestModelIdExtensions.ToEnum(modelId)
-            ?? throw new NotSupportedException($"Unsupported Rime TTS model '{modelId}'. Use 'mistv3', 'mistv2', or 'arcana'.");
+        return modelId.ToUpperInvariant() switch
+        {
+            "CODA" => TtsRequestModelId.Coda,
+            "MISTV3" => TtsRequestModelId.Mistv3,
+            "MISTV2" => TtsRequestModelId.Mistv2,
+            "ARCANA" => TtsRequestModelId.Arcana,
+            _ => throw new NotSupportedException(
+                $"Unsupported Rime TTS model '{modelId}'. Use 'coda', 'mistv3', or 'mistv2'."),
+        };
     }
 
     private static ResolvedRimeTextToSpeechOptions ResolveRequestOptions(TextToSpeechOptions? options)
@@ -177,14 +184,14 @@ public sealed partial class RimeClient : Microsoft.Extensions.AI.ITextToSpeechCl
     {
         if (format is not { Length: > 0 })
         {
-            return ("audio/mp3", "audio/mpeg");
+            return ("audio/mpeg", "audio/mpeg");
         }
 
         if (string.Equals(format, "audio/mpeg", StringComparison.OrdinalIgnoreCase)
             || string.Equals(format, "audio/mp3", StringComparison.OrdinalIgnoreCase)
             || string.Equals(format, "mp3", StringComparison.OrdinalIgnoreCase))
         {
-            return ("audio/mp3", "audio/mpeg");
+            return ("audio/mpeg", "audio/mpeg");
         }
 
         if (string.Equals(format, "audio/wav", StringComparison.OrdinalIgnoreCase)
@@ -198,7 +205,7 @@ public sealed partial class RimeClient : Microsoft.Extensions.AI.ITextToSpeechCl
             || string.Equals(format, "pcm", StringComparison.OrdinalIgnoreCase)
             || string.Equals(format, "pcm_s16le", StringComparison.OrdinalIgnoreCase))
         {
-            return ("audio/pcm", "audio/pcm;codec=s16le");
+            return ("audio/L16", "audio/L16");
         }
 
         if (string.Equals(format, "audio/x-mulaw", StringComparison.OrdinalIgnoreCase)
@@ -206,7 +213,7 @@ public sealed partial class RimeClient : Microsoft.Extensions.AI.ITextToSpeechCl
             || string.Equals(format, "mulaw", StringComparison.OrdinalIgnoreCase)
             || string.Equals(format, "mu-law", StringComparison.OrdinalIgnoreCase))
         {
-            return ("audio/x-mulaw", "audio/basic");
+            return ("audio/PCMU", "audio/PCMU");
         }
 
         if (string.Equals(format, "audio/ogg", StringComparison.OrdinalIgnoreCase)
@@ -239,8 +246,11 @@ public sealed partial class RimeClient : Microsoft.Extensions.AI.ITextToSpeechCl
             string.Equals(normalized, "en", StringComparison.OrdinalIgnoreCase) ? "eng" :
             string.Equals(normalized, "es", StringComparison.OrdinalIgnoreCase) ? "spa" :
             string.Equals(normalized, "fr", StringComparison.OrdinalIgnoreCase) ? "fra" :
-            string.Equals(normalized, "de", StringComparison.OrdinalIgnoreCase) ? "deu" :
+            string.Equals(normalized, "de", StringComparison.OrdinalIgnoreCase) ? "ger" :
+            string.Equals(normalized, "ar", StringComparison.OrdinalIgnoreCase) ? "ara" :
+            string.Equals(normalized, "hi", StringComparison.OrdinalIgnoreCase) ? "hin" :
             string.Equals(normalized, "it", StringComparison.OrdinalIgnoreCase) ? "ita" :
+            string.Equals(normalized, "ja", StringComparison.OrdinalIgnoreCase) ? "jpn" :
             string.Equals(normalized, "pt", StringComparison.OrdinalIgnoreCase) ? "por" :
             normalized;
     }

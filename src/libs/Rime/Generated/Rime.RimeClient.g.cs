@@ -5,7 +5,7 @@ namespace Rime
 {
     /// <summary>
     /// Ultra-low-latency (&lt;200ms) conversational text-to-speech API by Rime AI.<br/>
-    /// Features 300+ voices across multiple models (Arcana, Mist v2, Mist v3) with<br/>
+    /// Features hundreds of voices across Coda, Mist v2, and Mist v3 with<br/>
     /// streaming HTTP output, WebSocket streaming, and custom pronunciation control.<br/>
     /// If no httpClient is provided, a new one will be created.<br/>
     /// If no baseUri is provided, the default baseUri from OpenAPI spec will be used.
@@ -40,7 +40,7 @@ namespace Rime
         internal global::System.Lazy<global::System.Text.Json.Serialization.JsonSerializerContext> JsonSerializerContextProvider { get; set; } = new(() => global::Rime.SourceGenerationContext.Default);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public global::System.Text.Json.Serialization.JsonSerializerContext JsonSerializerContext
         {
@@ -50,7 +50,7 @@ namespace Rime
 
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public TextToSpeechClient TextToSpeech => new TextToSpeechClient(HttpClient, baseUri: null, authorizations: Authorizations, options: Options)
         {
@@ -59,7 +59,7 @@ namespace Rime
         };
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public VoicesClient Voices => new VoicesClient(HttpClient, baseUri: null, authorizations: Authorizations, options: Options)
         {

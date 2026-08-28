@@ -4,7 +4,7 @@
 namespace Rime
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public sealed partial class TtsRequest
     {
@@ -19,8 +19,7 @@ namespace Rime
         public required string Speaker { get; set; }
 
         /// <summary>
-        /// The text to speak. Character limits depend on the model:<br/>
-        /// Mist v2/v3 allow 500 characters per request via the API, Arcana allows 3,000.<br/>
+        /// The text to speak. The cloud API accepts up to 1,000 characters per request.<br/>
         /// Example: Hello from Rime AI.
         /// </summary>
         /// <example>Hello from Rime AI.</example>
@@ -29,27 +28,33 @@ namespace Rime
         public required string Text { get; set; }
 
         /// <summary>
-        /// The TTS model to use. `arcana` for flagship conversational voices,<br/>
-        /// `mistv3` for low-latency streaming, `mistv2` as a fallback.<br/>
-        /// Example: mistv3
+        /// The TTS model to use. `coda` is the flagship model for new applications,<br/>
+        /// `mistv3` prioritizes lowest time to first audio, and `mistv2` retains inline<br/>
+        /// pronunciation control. `arcana` is a retired compatibility alias now served<br/>
+        /// by Coda; use `coda` for new requests.<br/>
+        /// Example: coda
         /// </summary>
-        /// <example>mistv3</example>
+        /// <example>coda</example>
         [global::System.Text.Json.Serialization.JsonPropertyName("modelId")]
         [global::System.Text.Json.Serialization.JsonConverter(typeof(global::Rime.JsonConverters.TtsRequestModelIdJsonConverter))]
         public global::Rime.TtsRequestModelId? ModelId { get; set; }
 
         /// <summary>
         /// Language identifier for the selected speaker. Must match the speaker's<br/>
-        /// language. Defaults to `eng`/`en` depending on model.<br/>
-        /// Example: eng
+        /// language. Both two-letter and three-letter ISO codes are accepted. Coda<br/>
+        /// supports English, Arabic, French, German, Hindi, Italian, Japanese,<br/>
+        /// Portuguese, and Spanish; Mist v2/v3 support English, French, German,<br/>
+        /// and Spanish.<br/>
+        /// Example: en
         /// </summary>
-        /// <example>eng</example>
+        /// <example>en</example>
         [global::System.Text.Json.Serialization.JsonPropertyName("lang")]
         public string? Lang { get; set; }
 
         /// <summary>
-        /// Output sample rate in Hz. Allowed range is 4000-44100 for Mist v2;<br/>
-        /// Mist v3 and Arcana default to 24000 when omitted.<br/>
+        /// Output sample rate in Hz. Mist v2 accepts 4000-44100. Coda and Mist v3<br/>
+        /// default to 24000; the public API's common range is 8000-96000, with values<br/>
+        /// above 24000 produced by upsampling.<br/>
         /// Example: 24000
         /// </summary>
         /// <example>24000</example>
@@ -66,8 +71,9 @@ namespace Rime
         public float? SpeedAlpha { get; set; }
 
         /// <summary>
-        /// Adjusts the speed of speech for Mist v3 / Arcana. Values below 1 slow down<br/>
-        /// the audio; values above 1 speed it up.<br/>
+        /// Adjusts the speed of speech for Coda and Mist v3. Values above 1.0 slow<br/>
+        /// down the audio and values below 1.0 speed it up. Values outside 0.4-2.5<br/>
+        /// are clamped by the API.<br/>
         /// Example: 1.0
         /// </summary>
         /// <example>1.0</example>
@@ -84,6 +90,7 @@ namespace Rime
 
         /// <summary>
         /// Enables custom pronunciation via phonemes specified inside curly brackets.<br/>
+        /// Supported by Mist v2; Coda and Mist v3 accept and ignore this option.<br/>
         /// Default Value: false
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("phonemizeBetweenBrackets")]
@@ -91,7 +98,7 @@ namespace Rime
 
         /// <summary>
         /// Comma-separated per-word speed multipliers for words inside square brackets.<br/>
-        /// Values &gt; 1.0 accelerate, values &lt; 1.0 decelerate.<br/>
+        /// Values below 1.0 speed up speech and values above 1.0 slow it down.<br/>
         /// Example: 1.2,0.8
         /// </summary>
         /// <example>1.2,0.8</example>
@@ -106,7 +113,9 @@ namespace Rime
         public bool? NoTextNormalization { get; set; }
 
         /// <summary>
-        /// Save out-of-vocabulary words for later review. Available only on Mist v2.<br/>
+        /// Legacy Mist v2 option retained for backward compatibility. The Speech QA<br/>
+        /// dashboard it reported to has retired, and Rime no longer documents this<br/>
+        /// option for new integrations.<br/>
         /// Default Value: false
         /// </summary>
         [global::System.Text.Json.Serialization.JsonPropertyName("saveOovs")]
@@ -127,23 +136,28 @@ namespace Rime
         /// Example: cove
         /// </param>
         /// <param name="text">
-        /// The text to speak. Character limits depend on the model:<br/>
-        /// Mist v2/v3 allow 500 characters per request via the API, Arcana allows 3,000.<br/>
+        /// The text to speak. The cloud API accepts up to 1,000 characters per request.<br/>
         /// Example: Hello from Rime AI.
         /// </param>
         /// <param name="modelId">
-        /// The TTS model to use. `arcana` for flagship conversational voices,<br/>
-        /// `mistv3` for low-latency streaming, `mistv2` as a fallback.<br/>
-        /// Example: mistv3
+        /// The TTS model to use. `coda` is the flagship model for new applications,<br/>
+        /// `mistv3` prioritizes lowest time to first audio, and `mistv2` retains inline<br/>
+        /// pronunciation control. `arcana` is a retired compatibility alias now served<br/>
+        /// by Coda; use `coda` for new requests.<br/>
+        /// Example: coda
         /// </param>
         /// <param name="lang">
         /// Language identifier for the selected speaker. Must match the speaker's<br/>
-        /// language. Defaults to `eng`/`en` depending on model.<br/>
-        /// Example: eng
+        /// language. Both two-letter and three-letter ISO codes are accepted. Coda<br/>
+        /// supports English, Arabic, French, German, Hindi, Italian, Japanese,<br/>
+        /// Portuguese, and Spanish; Mist v2/v3 support English, French, German,<br/>
+        /// and Spanish.<br/>
+        /// Example: en
         /// </param>
         /// <param name="samplingRate">
-        /// Output sample rate in Hz. Allowed range is 4000-44100 for Mist v2;<br/>
-        /// Mist v3 and Arcana default to 24000 when omitted.<br/>
+        /// Output sample rate in Hz. Mist v2 accepts 4000-44100. Coda and Mist v3<br/>
+        /// default to 24000; the public API's common range is 8000-96000, with values<br/>
+        /// above 24000 produced by upsampling.<br/>
         /// Example: 24000
         /// </param>
         /// <param name="speedAlpha">
@@ -152,8 +166,9 @@ namespace Rime
         /// Example: 1.0
         /// </param>
         /// <param name="timeScaleFactor">
-        /// Adjusts the speed of speech for Mist v3 / Arcana. Values below 1 slow down<br/>
-        /// the audio; values above 1 speed it up.<br/>
+        /// Adjusts the speed of speech for Coda and Mist v3. Values above 1.0 slow<br/>
+        /// down the audio and values below 1.0 speed it up. Values outside 0.4-2.5<br/>
+        /// are clamped by the API.<br/>
         /// Example: 1.0
         /// </param>
         /// <param name="pauseBetweenBrackets">
@@ -163,11 +178,12 @@ namespace Rime
         /// </param>
         /// <param name="phonemizeBetweenBrackets">
         /// Enables custom pronunciation via phonemes specified inside curly brackets.<br/>
+        /// Supported by Mist v2; Coda and Mist v3 accept and ignore this option.<br/>
         /// Default Value: false
         /// </param>
         /// <param name="inlineSpeedAlpha">
         /// Comma-separated per-word speed multipliers for words inside square brackets.<br/>
-        /// Values &gt; 1.0 accelerate, values &lt; 1.0 decelerate.<br/>
+        /// Values below 1.0 speed up speech and values above 1.0 slow it down.<br/>
         /// Example: 1.2,0.8
         /// </param>
         /// <param name="noTextNormalization">
@@ -175,7 +191,9 @@ namespace Rime
         /// Default Value: false
         /// </param>
         /// <param name="saveOovs">
-        /// Save out-of-vocabulary words for later review. Available only on Mist v2.<br/>
+        /// Legacy Mist v2 option retained for backward compatibility. The Speech QA<br/>
+        /// dashboard it reported to has retired, and Rime no longer documents this<br/>
+        /// option for new integrations.<br/>
         /// Default Value: false
         /// </param>
 #if NET7_0_OR_GREATER

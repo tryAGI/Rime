@@ -18,7 +18,7 @@ public partial class Tests
         using var client = GetAuthenticatedClient();
 
         //// Create AIFunction tools that any IChatClient can invoke via function calling.
-        AIFunction tts = client.AsTextToSpeechTool(defaultSpeaker: "cove", defaultModel: "mistv3");
+        AIFunction tts = client.AsTextToSpeechTool(defaultSpeaker: "astra", defaultModel: "coda");
         AIFunction listVoices = client.AsListVoicesTool();
         AIFunction listVoiceDetails = client.AsListVoiceDetailsTool();
 

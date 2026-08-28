@@ -1,6 +1,6 @@
 <div class="docs-hero">
   <h1>Rime</h1>
-  <p class="docs-hero-lead">Modern .NET SDK for Rime generated from the provider's OpenAPI definition with AutoSDK.</p>
+  <p class="docs-hero-lead">Modern .NET SDK for Rime generated from a source-controlled API contract with AutoSDK.</p>
   <div class="docs-badge-row">
     <a href="https://www.nuget.org/packages/Rime/"><img alt="Nuget package" src="https://img.shields.io/nuget/vpre/Rime"></a>
     <a href="https://github.com/tryAGI/Rime/actions/workflows/dotnet.yml"><img alt="dotnet" src="https://github.com/tryAGI/Rime/actions/workflows/dotnet.yml/badge.svg?branch=main"></a>
@@ -15,8 +15,8 @@
 
 <div class="docs-feature-grid">
   <div class="docs-feature-card">
-    <h3>Generated from the source spec</h3>
-    <p>Built from <a href="https://docs.rime.ai/api-reference/openapi.json">Rime's OpenAPI definition</a> so the SDK stays close to the upstream API surface.</p>
+    <h3>Generated from a reviewed contract</h3>
+    <p>Built from a <a href="https://github.com/tryAGI/Rime/blob/main/openapi.yaml">source-controlled OpenAPI definition</a> maintained against Rime's public API reference and changelog.</p>
   </div>
   <div class="docs-feature-card">
     <h3>Auto-updated</h3>

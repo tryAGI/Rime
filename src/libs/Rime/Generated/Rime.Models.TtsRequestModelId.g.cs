@@ -4,22 +4,28 @@
 namespace Rime
 {
     /// <summary>
-    /// The TTS model to use. `arcana` for flagship conversational voices,<br/>
-    /// `mistv3` for low-latency streaming, `mistv2` as a fallback.<br/>
-    /// Example: mistv3
+    /// The TTS model to use. `coda` is the flagship model for new applications,<br/>
+    /// `mistv3` prioritizes lowest time to first audio, and `mistv2` retains inline<br/>
+    /// pronunciation control. `arcana` is a retired compatibility alias now served<br/>
+    /// by Coda; use `coda` for new requests.<br/>
+    /// Example: coda
     /// </summary>
     public enum TtsRequestModelId
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         Arcana,
         /// <summary>
-        /// 
+        ///
+        /// </summary>
+        Coda,
+        /// <summary>
+        ///
         /// </summary>
         Mistv2,
         /// <summary>
-        /// 
+        ///
         /// </summary>
         Mistv3,
     }
@@ -37,6 +43,7 @@ namespace Rime
             return value switch
             {
                 TtsRequestModelId.Arcana => "arcana",
+                TtsRequestModelId.Coda => "coda",
                 TtsRequestModelId.Mistv2 => "mistv2",
                 TtsRequestModelId.Mistv3 => "mistv3",
                 _ => throw new global::System.ArgumentOutOfRangeException(nameof(value), value, null),
@@ -50,6 +57,7 @@ namespace Rime
             return value switch
             {
                 "arcana" => TtsRequestModelId.Arcana,
+                "coda" => TtsRequestModelId.Coda,
                 "mistv2" => TtsRequestModelId.Mistv2,
                 "mistv3" => TtsRequestModelId.Mistv3,
                 _ => null,

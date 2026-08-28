@@ -4,7 +4,7 @@
 namespace Rime
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public sealed partial class VoiceDetail
     {
@@ -65,6 +65,22 @@ namespace Rime
         public global::System.Collections.Generic.IList<string>? Genre { get; set; }
 
         /// <summary>
+        /// Human-readable description of the voice's sound and delivery.<br/>
+        /// Example: Bright, lively California, quick and expressive.
+        /// </summary>
+        /// <example>Bright, lively California, quick and expressive.</example>
+        [global::System.Text.Json.Serialization.JsonPropertyName("description")]
+        public string? Description { get; set; }
+
+        /// <summary>
+        /// Optional style labels associated with the voice.<br/>
+        /// Example: [formal, more energetic]
+        /// </summary>
+        /// <example>[formal, more energetic]</example>
+        [global::System.Text.Json.Serialization.JsonPropertyName("styles")]
+        public global::System.Collections.Generic.IList<string>? Styles { get; set; }
+
+        /// <summary>
         /// Spoken language the voice is usable for.<br/>
         /// Example: English
         /// </summary>
@@ -82,11 +98,19 @@ namespace Rime
 
         /// <summary>
         /// Model id that the speaker is available under.<br/>
-        /// Example: mistv3
+        /// Example: coda
         /// </summary>
-        /// <example>mistv3</example>
+        /// <example>coda</example>
         [global::System.Text.Json.Serialization.JsonPropertyName("modelId")]
         public string? ModelId { get; set; }
+
+        /// <summary>
+        /// Whether Rime identifies this voice as a flagship voice.<br/>
+        /// Example: true
+        /// </summary>
+        /// <example>true</example>
+        [global::System.Text.Json.Serialization.JsonPropertyName("flagship")]
+        public bool? Flagship { get; set; }
 
         /// <summary>
         /// Additional properties that are not explicitly defined in the schema
@@ -125,6 +149,14 @@ namespace Rime
         /// Genres the voice is suitable for.<br/>
         /// Example: [Conversational]
         /// </param>
+        /// <param name="description">
+        /// Human-readable description of the voice's sound and delivery.<br/>
+        /// Example: Bright, lively California, quick and expressive.
+        /// </param>
+        /// <param name="styles">
+        /// Optional style labels associated with the voice.<br/>
+        /// Example: [formal, more energetic]
+        /// </param>
         /// <param name="language">
         /// Spoken language the voice is usable for.<br/>
         /// Example: English
@@ -135,7 +167,11 @@ namespace Rime
         /// </param>
         /// <param name="modelId">
         /// Model id that the speaker is available under.<br/>
-        /// Example: mistv3
+        /// Example: coda
+        /// </param>
+        /// <param name="flagship">
+        /// Whether Rime identifies this voice as a flagship voice.<br/>
+        /// Example: true
         /// </param>
 #if NET7_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
@@ -148,9 +184,12 @@ namespace Rime
             string? dialect,
             string? demographic,
             global::System.Collections.Generic.IList<string>? genre,
+            string? description,
+            global::System.Collections.Generic.IList<string>? styles,
             string? language,
             string? lang,
-            string? modelId)
+            string? modelId,
+            bool? flagship)
         {
             this.Speaker = speaker;
             this.Gender = gender;
@@ -159,9 +198,12 @@ namespace Rime
             this.Dialect = dialect;
             this.Demographic = demographic;
             this.Genre = genre;
+            this.Description = description;
+            this.Styles = styles;
             this.Language = language;
             this.Lang = lang;
             this.ModelId = modelId;
+            this.Flagship = flagship;
         }
 
         /// <summary>

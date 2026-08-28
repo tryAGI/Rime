@@ -23,11 +23,11 @@ using var client = new RimeClient(
 ITextToSpeechClient ttsClient = client;
 
 var response = await ttsClient.GetAudioAsync(
-    "Rime Mist v3 is available through Microsoft.Extensions.AI.",
+    "Rime Coda is available through Microsoft.Extensions.AI.",
     new TextToSpeechOptions
     {
-        ModelId = "mistv3",
-        VoiceId = "cove",
+        ModelId = "coda",
+        VoiceId = "astra",
         AudioFormat = "mp3",
         Speed = 1.05f,
     });
@@ -36,7 +36,7 @@ var audio = response.Contents.OfType<DataContent>().Single();
 File.WriteAllBytes("rime.mp3", audio.Data.ToArray());
 ```
 
-`VoiceId` maps to Rime's `speaker`, and `ModelId` selects `mistv3`, `mistv2`, or `arcana`. If no voice is specified, the adapter defaults to `cove` to match the SDK examples.
+`VoiceId` maps to Rime's `speaker`, and `ModelId` selects `coda`, `mistv3`, or `mistv2`. If neither is specified, the adapter uses the recommended Coda model with the `astra` voice. Rime retired Arcana from its cloud API in August 2026; the server still routes the legacy identifier to Coda, but new code should use `coda` and verify the voice/language pairing against the live catalog.
 
 Use `RimeTextToSpeechPropertyNames` for Rime-specific controls:
 
@@ -45,8 +45,8 @@ var response = await ttsClient.GetAudioAsync(
     "Use a fixed WAV sample rate and pronunciation controls.",
     new TextToSpeechOptions
     {
-        ModelId = "mistv3",
-        VoiceId = "cove",
+        ModelId = "coda",
+        VoiceId = "astra",
         AudioFormat = "wav",
         Language = "en-US",
         AdditionalProperties = new()
@@ -64,8 +64,8 @@ await foreach (var update in ttsClient.GetStreamingAudioAsync(
     "Read Rime audio chunks through MEAI.",
     new TextToSpeechOptions
     {
-        ModelId = "mistv3",
-        VoiceId = "cove",
+        ModelId = "coda",
+        VoiceId = "astra",
         AudioFormat = "mp3",
     }))
 {
