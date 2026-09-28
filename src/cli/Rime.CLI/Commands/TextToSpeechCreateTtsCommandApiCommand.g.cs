@@ -119,6 +119,8 @@ option for new integrations.
           Hidden = true,
       };
 
+    static partial void CustomizeCommand(ref Command command);
+
     public static Command Create()
     {
         var command = new Command(@"create-tts", @"Generate speech (Coda / Mist v3 / Mist v2)
@@ -200,6 +202,7 @@ Supported `Accept` values: `audio/webm;codecs=opus`, `audio/ogg;codecs=opus`,
 
                                 await CliRuntime.WriteBinaryAsync(parseResult, response, cancellationToken).ConfigureAwait(false);
             }, cancellationToken).ConfigureAwait(false));
+        CustomizeCommand(ref command);
         return command;
     }
 }
