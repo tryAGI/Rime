@@ -29,6 +29,8 @@ internal static partial class VoicesListVoicesCommandApiCommand
                     static partial void CustomizeResponseFormatHints(Dictionary<string, CliFormatHint> hints);
 
 
+    static partial void CustomizeCommand(ref Command command);
+
     public static Command Create()
     {
         var command = new Command(@"list-voices", @"List all available voices
@@ -57,6 +59,7 @@ voice supported by Rime. Language keys follow ISO 639-2 (e.g. `eng`, `spa`).
                                     FormatResponse,
                                     cancellationToken).ConfigureAwait(false);
             }, cancellationToken).ConfigureAwait(false));
+        CustomizeCommand(ref command);
         return command;
     }
 }
