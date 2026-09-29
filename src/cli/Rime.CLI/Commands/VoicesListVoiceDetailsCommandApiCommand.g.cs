@@ -31,9 +31,9 @@ internal static partial class VoicesListVoiceDetailsCommandApiCommand
 
     static partial void CustomizeCommand(ref Command command);
 
-    public static Command Create()
+    public static Command Create(string? commandName = null)
     {
-        var command = new Command(@"list-voice-details", @"List voice details
+        var command = new Command(commandName ?? @"list-voice-details", @"List voice details
 Returns an array of voice metadata objects including speaker name, gender, age,
 country, dialect, demographic, genre, language, and the model the voice is
 available under.

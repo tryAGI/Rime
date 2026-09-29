@@ -121,9 +121,9 @@ option for new integrations.
 
     static partial void CustomizeCommand(ref Command command);
 
-    public static Command Create()
+    public static Command Create(string? commandName = null)
     {
-        var command = new Command(@"create-tts", @"Generate speech (Coda / Mist v3 / Mist v2)
+        var command = new Command(commandName ?? @"create-tts", @"Generate speech (Coda / Mist v3 / Mist v2)
 Synthesize speech from text using Rime's TTS models (`coda`, `mistv3`, or `mistv2`).
 The retired `arcana` identifier remains accepted by Rime as a compatibility alias
 that is served by Coda, but new applications should send `coda`.
