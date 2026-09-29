@@ -31,9 +31,9 @@ internal static partial class VoicesListVoicesCommandApiCommand
 
     static partial void CustomizeCommand(ref Command command);
 
-    public static Command Create()
+    public static Command Create(string? commandName = null)
     {
-        var command = new Command(@"list-voices", @"List all available voices
+        var command = new Command(commandName ?? @"list-voices", @"List all available voices
 Returns a mapping of `modelId` → language code → list of voice names for every
 voice supported by Rime. Language keys follow ISO 639-2 (e.g. `eng`, `spa`).
 ");
