@@ -53,6 +53,26 @@ namespace Rime
         /// `audio/pcm`, and `audio/x-mulaw` are deprecated but remain accepted by Rime.
         /// </summary>
         /// <param name="request"></param>
+        /// <returns>The response metadata and an unbuffered body stream. The caller must dispose Body to release the HTTP response.</returns>
+        /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
+        /// <param name="cancellationToken">The token to cancel the operation with</param>
+        /// <exception cref="global::Rime.ApiException"></exception>
+        global::System.Threading.Tasks.Task<global::Rime.AutoSDKHttpResponse<global::System.IO.Stream>> CreateTtsAsStreamAsResponseAsync(
+
+            global::Rime.TtsRequest request,
+            global::Rime.AutoSDKRequestOptions? requestOptions = default,
+            global::System.Threading.CancellationToken cancellationToken = default);
+        /// <summary>
+        /// Generate speech (Coda / Mist v3 / Mist v2)<br/>
+        /// Synthesize speech from text using Rime's TTS models (`coda`, `mistv3`, or `mistv2`).<br/>
+        /// The retired `arcana` identifier remains accepted by Rime as a compatibility alias<br/>
+        /// that is served by Coda, but new applications should send `coda`.<br/>
+        /// Audio bytes are returned in the format indicated by the `Accept` header.<br/>
+        /// Supported `Accept` values: `audio/webm;codecs=opus`, `audio/ogg;codecs=opus`,<br/>
+        /// `audio/mpeg`, `audio/wav`, `audio/L16`, `audio/PCMU`. The aliases `audio/mp3`,<br/>
+        /// `audio/pcm`, and `audio/x-mulaw` are deprecated but remain accepted by Rime.
+        /// </summary>
+        /// <param name="request"></param>
         /// <param name="requestOptions">Per-request overrides such as headers, query parameters, timeout, retries, and response buffering.</param>
         /// <param name="cancellationToken">The token to cancel the operation with</param>
         /// <exception cref="global::Rime.ApiException"></exception>
