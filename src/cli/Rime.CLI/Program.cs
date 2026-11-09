@@ -13,5 +13,6 @@ rootCommand.Options.Add(CliOptions.OutputDirectory);
 rootCommand.Subcommands.Add(AuthCommand.Create());
 rootCommand.Subcommands.Add(TextToSpeechApiGroupCommand.Create());
 rootCommand.Subcommands.Add(VoicesApiGroupCommand.Create());
+rootCommand.Subcommands.Add(CliCompletion.CreateCommand(rootCommand, @"rime"));
 
 return await rootCommand.Parse(args).InvokeAsync().ConfigureAwait(false);
