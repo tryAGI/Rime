@@ -18,7 +18,7 @@ namespace Rime.JsonConverters
                     var stringValue = reader.GetString();
                     if (stringValue != null)
                     {
-                        return global::Rime.TtsRequestModelIdExtensions.ToEnum(stringValue) ?? default;
+                        return global::Rime.TtsRequestModelIdExtensions.ToEnum(stringValue) ?? throw new global::System.Text.Json.JsonException($"Unknown value '{stringValue}' for global::Rime.TtsRequestModelId.");
                     }
 
                     break;
